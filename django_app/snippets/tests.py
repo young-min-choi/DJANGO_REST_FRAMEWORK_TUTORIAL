@@ -6,7 +6,7 @@ from snippets.models import Snippet
 
 
 class SnippetTests(APITestCase):
-    def test_create_account(self):
+    def test_create_snippet(self):
         """
         Ensure we can create a new snippet object.
         """

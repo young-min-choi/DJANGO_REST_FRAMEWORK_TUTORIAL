@@ -34,8 +34,8 @@ class SnippetTest(APILiveServerTestCase):
         self.assertEqual(response.data.get('title'), self.test_title.format(1))
         self.assertEqual(response.data.get('code'), self.test_code.format('!'))
         self.assertEqual(response.data.get('linenos'), self.default_linenos)
-        self.assertEqual(response.data.get('python'), self.default_language)
-        self.assertEqual(response.data.get('friendly'), self.default_style)
+        self.assertEqual(response.data.get('language'), self.default_language)
+        self.assertEqual(response.data.get('style'), self.default_style)
 
     def test_snippet_list(self):
         num = random.randrange(1,20)

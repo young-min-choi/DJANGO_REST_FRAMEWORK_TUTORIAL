@@ -1,29 +1,39 @@
 from django.urls import reverse
+from rest_framework import status
 from rest_framework.test import APILiveServerTestCase
 
 
 class SnippetTest(APILiveServerTestCase):
-    def test_snippet_list(self):
-        pass
+
+    test_title = 'Test Snippet Title{}'
+    test_code = 'print("Hello, world{}")'
+    default_linenos = False
+    default_language = 'python'
+    default_style = 'friendly'
+
+    def create_snippet(self, num=1):
+        for i in range(num):
+            test_title = self.test_title.format(i+1)
+            test_code = self.test_code.format('!'*(i+1))
+            url = reverse('snippet:list')
+            data = {
+                'title': test_title,
+                'code': test_code,
+            }
+            response = self.client.post(url, data, format='json')
+            if num ==1:
+                return response
 
     def test_snippet_create(self):
-        test_title =  'Test Snippet Title'
-        test_code = 'print("Hello, world!")'
-        default_linenos = False
-        default_language = 'python'
-        default_style = 'friendly'
+        response = self.create_snippet()
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data.get('title'), self.test_title.format(1))
+        self.assertEqual(response.data.get('code'), self.test_code.format('!'))
+        self.assertEqual(response.data.get('linenos'), self.default_linenos)
+        self.assertEqual(response.data.get('python'), self.default_language)
+        self.assertEqual(response.data.get('friendly'), self.default_style)
 
-        url = reverse('snippet:list')
-        data = {
-            'title': test_title,
-            'code': test_code,
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(test_title, response.data.get('title'))
-        self.assertEqual(test_code, response.data.get('code'))
-        self.assertEqual(default_linenos, response.data.get('linenos'))
-        self.assertEqual(default_language, response.data.get('python'))
-        self.assertEqual(default_style, response.data.get('friendly'))
+    def test_snippet_list(self):
 
 
     def test_snippet_retrieve(self):
